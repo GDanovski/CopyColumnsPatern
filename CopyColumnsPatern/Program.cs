@@ -11,53 +11,68 @@ namespace CopyColumnsPatern
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("File dir:");
-            string dir = Console.ReadLine();
-            string dirOut = Path.GetDirectoryName(dir) + @"\output.txt";
-            Console.WriteLine("Copy from column:");
-            int start = int.Parse(Console.ReadLine());
-            Console.WriteLine("Copy after every columns:");
-            int step = int.Parse(Console.ReadLine());
+            Console.WriteLine("Processing....");
 
-            string[] input;
-            List<List<string>> output = new List<List<string>>();
+            string[] dirs = new string[] {
+                @"D:\Desktop\OldComp\Work\Data_after 06_2016\DoubleHit\Stoyno\MDC1_29_12_2020\long_last_new\blur\avg\results_FirsFocus_22length_1.txt",
+                @"D:\Desktop\OldComp\Work\Data_after 06_2016\DoubleHit\Stoyno\MDC1_29_12_2020\long_last_new\blur\max\results_FirsFocus_22length_1.txt",
+                @"D:\Desktop\OldComp\Work\Data_after 06_2016\DoubleHit\Stoyno\MDC1_29_12_2020\long_last_new\raw\avg\results_FirsFocus_22length_1.txt",
+                @"D:\Desktop\OldComp\Work\Data_after 06_2016\DoubleHit\Stoyno\MDC1_29_12_2020\long_last_new\raw\max\results_FirsFocus_22length_1.txt",
+                @"D:\Desktop\OldComp\Work\Data_after 06_2016\DoubleHit\Stoyno\MDC1_29_12_2020\long_last_new\blur\avg\results_FirsFocus_28length_1.txt",
+                @"D:\Desktop\OldComp\Work\Data_after 06_2016\DoubleHit\Stoyno\MDC1_29_12_2020\long_last_new\blur\max\results_FirsFocus_28length_1.txt",
+                @"D:\Desktop\OldComp\Work\Data_after 06_2016\DoubleHit\Stoyno\MDC1_29_12_2020\long_last_new\raw\avg\results_FirsFocus_28length_1.txt",
+                @"D:\Desktop\OldComp\Work\Data_after 06_2016\DoubleHit\Stoyno\MDC1_29_12_2020\long_last_new\raw\max\results_FirsFocus_28length_1.txt"
+            };
+            
+            int start = 70;
+            int step = 71; 
 
-            StreamReader sr = new StreamReader(dir);
-            StreamWriter sw = new StreamWriter(dirOut);
-            string line = sr.ReadLine();
-
-            while (line != null)
+            foreach (string dir in dirs)
             {
-                input = line.Split(new string[] { "\t" }, StringSplitOptions.None);
-                var vals = new List<string>();
+                string dirOut = dir.Replace(".txt", "_output.txt");
+                string[] input;
+                List<List<string>> output = new List<List<string>>();
 
-                for (int i = start; i < input.Length; i += step)
-                    vals.Add(input[i]);
-                output.Add(vals);
-                
-                line = sr.ReadLine();
+                StreamReader sr = new StreamReader(dir);
+                StreamWriter sw = new StreamWriter(dirOut);
+                string line = sr.ReadLine();
+
+                while (line != null)
+                {
+                    input = line.Split(new string[] { "\t" }, StringSplitOptions.None);
+                    var vals = new List<string>();
+
+                    for (int i = start; i < input.Length; i += step)
+                        vals.Add(input[i]);
+                    output.Add(vals);
+
+                    line = sr.ReadLine();
+                }
+                sw.WriteLine(string.Join("\t", output[0]));
+
+                for (int i = output.Count() - 1; i >= 1; i--)
+                {
+                    sw.WriteLine(string.Join("\t", output[i]));
+                    // sw.WriteLine(string.Join("\t", output[i]));
+                }
+
+                for (int i = 1; i < output.Count(); i++)
+                {
+                    sw.WriteLine(string.Join("\t", output[i]));
+                    // sw.WriteLine(string.Join("\t", output[i]));
+                }
+
+                sr.Close();
+                sw.Close();
+                sr = null;
+                sw = null;
+                input = null;
+                output.Clear();
+                output = null;
+
+                Console.WriteLine("Processed - " + Path.GetFileNameWithoutExtension(dirOut));
             }
-            sw.WriteLine(string.Join("\t", output[0]));
-
-            for (int i = output.Count() - 1; i >= 1; i--)
-            {
-                sw.WriteLine(string.Join("\t", output[i]));
-               // sw.WriteLine(string.Join("\t", output[i]));
-            }
-
-            for (int i = 1; i < output.Count(); i++)
-            {
-                sw.WriteLine(string.Join("\t", output[i]));
-               // sw.WriteLine(string.Join("\t", output[i]));
-            }
-
-            sr.Close();
-            sw.Close();
-            sr = null;
-            sw = null;
-            input = null;
-            output.Clear();
-            output = null;
+            Console.ReadLine();
         }        
     }
 }
